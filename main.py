@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyMXuX3tItwo3w2QwQKQl3mD",
+      "authorship_tag": "ABX9TyPk+zCzjpDdRRUarY1Lb/tA",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -23,8 +23,17 @@
         "colab_type": "text"
       },
       "source": [
-        "<a href=\"https://colab.research.google.com/github/cedizen/detection_automatique_faux_billets/blob/main/main.py\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+        "<a href=\"https://colab.research.google.com/github/cedizen/detection_automatique_faux_billets/blob/target_model/main.py\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
       ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "ExY0xkOTi-7s"
+      },
+      "execution_count": 16,
+      "outputs": []
     },
     {
       "cell_type": "code",
@@ -38,9 +47,9 @@
         },
         "collapsed": true,
         "id": "gzDILzwhaAJG",
-        "outputId": "181f6057-cf0b-4db6-fb10-ab7db1c9d888"
+        "outputId": "d39d4be7-cd8e-4d2d-a2fd-ababe60d839d"
       },
-      "execution_count": null,
+      "execution_count": 17,
       "outputs": [
         {
           "output_type": "stream",
@@ -55,12 +64,14 @@
       "cell_type": "code",
       "source": [
         "import joblib\n",
-        "import pandas as pd"
+        "import pandas as pd\n",
+        "\n",
+        "from sklearn.cluster import KMeans"
       ],
       "metadata": {
         "id": "gjyQCnWoUos5"
       },
-      "execution_count": null,
+      "execution_count": 18,
       "outputs": []
     },
     {
@@ -73,12 +84,12 @@
       "metadata": {
         "id": "-hNHTjeiaah5"
       },
-      "execution_count": null,
+      "execution_count": 19,
       "outputs": []
     },
     {
       "cell_type": "code",
-      "execution_count": null,
+      "execution_count": 20,
       "metadata": {
         "id": "urtzfU50JFDm"
       },
@@ -88,22 +99,29 @@
         "\n",
         "  # Dataframe given\n",
         "  df = pd.read_csv(root + file)\n",
+        "\n",
         "  model = joblib.load(f\"{root}model.pkl\")\n",
         "\n",
-        "  # remove target column\n",
-        "  if target in df.columns:\n",
+        "  # Check if the model is unsupervised like KMeans\n",
+        "  if isinstance(model, KMeans):\n",
+        "    clusters = model.predict(df)\n",
+        "    df[\"clusters\"] = clusters\n",
+        "    print(df)\n",
+        "    df.to_csv(f\"{root}data/new_csv.csv\", index=False)\n",
+        "\n",
+        "  # Or supervised and then need to split the target from the dataset\n",
+        "  else:\n",
         "    X_df = df.drop(target, axis=1)\n",
+        "    predictions = model.predict(X_df)\n",
+        "    X_df[target] = df[target]\n",
+        "    X_df[\"predictions\"] = predictions\n",
         "\n",
-        "  predictions = model.predict(X_df)\n",
+        "    # calculate the ratio prediction\n",
+        "    ratio_false_predictions = (X_df[\"is_genuine\"] != X_df[\"predictions\"]).sum() / len(X_df)\n",
+        "    print(f\"{ratio_false_predictions*100:.2f}% of false predictions\")\n",
         "\n",
-        "  X_df[target] = df[target]\n",
-        "  X_df[\"predictions\"] = predictions\n",
-        "\n",
-        "  ratio_false_predictions = (X_df[\"is_genuine\"] != X_df[\"predictions\"]).sum() / len(X_df)\n",
-        "  print(f\"{ratio_false_predictions*100:.2f}% of false predictions\")\n",
-        "\n",
-        "  print(X_df)\n",
-        "  X_df.to_csv(f\"{root}data/new_csv.csv\", index=False)"
+        "    print(X_df)\n",
+        "    X_df.to_csv(f\"{root}data/new_csv.csv\", index=False)"
       ]
     },
     {
@@ -117,9 +135,9 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "DC4P-BH0lo3Q",
-        "outputId": "aefb66e1-a456-43b5-9d16-2fb66cc2c26b"
+        "outputId": "fafed025-89d7-4156-ac00-d60eed98b0e5"
       },
-      "execution_count": null,
+      "execution_count": 21,
       "outputs": [
         {
           "output_type": "stream",
