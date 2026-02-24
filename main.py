@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyMMVv0FsBRhylweqH2/L2T5",
+      "authorship_tag": "ABX9TyPDFCbZTn0W6bBSci8P3Jp2",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -140,7 +140,7 @@
     },
     {
       "cell_type": "code",
-      "execution_count": 18,
+      "execution_count": 21,
       "metadata": {
         "id": "urtzfU50JFDm"
       },
@@ -154,7 +154,7 @@
         "  # Dataframe given\n",
         "  df = load_data(file)\n",
         "\n",
-        "  model = joblib.load(f\"{root}model.pkl\")\n",
+        "  model = joblib.load(root + \"models/model.pkl\")\n",
         "\n",
         "  # Check if the model is in the pipeline or not, and extract from it\n",
         "  if isinstance(model, Pipeline):\n",
@@ -203,9 +203,9 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "DC4P-BH0lo3Q",
-        "outputId": "22ecea09-bd5a-4c94-9038-e56b2916e760"
+        "outputId": "6bb4ca76-c873-4c68-9024-97534a1d4bb9"
       },
-      "execution_count": 19,
+      "execution_count": 22,
       "outputs": [
         {
           "output_type": "stream",
