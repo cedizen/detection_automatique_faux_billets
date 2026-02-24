@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyPk+zCzjpDdRRUarY1Lb/tA",
+      "authorship_tag": "ABX9TyMTqjqdjl8jojFGyHC9kUNi",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -66,12 +66,13 @@
         "import joblib\n",
         "import pandas as pd\n",
         "\n",
-        "from sklearn.cluster import KMeans"
+        "from sklearn.cluster import KMeans\n",
+        "from sklearn.pipeline import Pipeline"
       ],
       "metadata": {
         "id": "gjyQCnWoUos5"
       },
-      "execution_count": 18,
+      "execution_count": 22,
       "outputs": []
     },
     {
@@ -89,7 +90,7 @@
     },
     {
       "cell_type": "code",
-      "execution_count": 20,
+      "execution_count": 34,
       "metadata": {
         "id": "urtzfU50JFDm"
       },
@@ -102,8 +103,14 @@
         "\n",
         "  model = joblib.load(f\"{root}model.pkl\")\n",
         "\n",
-        "  # Check if the model is unsupervised like KMeans\n",
-        "  if isinstance(model, KMeans):\n",
+        "  # Check if the model is in the pipeline or not, and extract from it\n",
+        "  if isinstance(model, Pipeline):\n",
+        "    final_estimator = model.steps[-1][1]\n",
+        "  else:\n",
+        "    final_estimator = model\n",
+        "\n",
+        "  # Check if the model is unsupervised like KMeans or others\n",
+        "  if isinstance(final_estimator, KMeans):\n",
         "    clusters = model.predict(df)\n",
         "    df[\"clusters\"] = clusters\n",
         "    print(df)\n",
@@ -111,14 +118,22 @@
         "\n",
         "  # Or supervised and then need to split the target from the dataset\n",
         "  else:\n",
-        "    X_df = df.drop(target, axis=1)\n",
+        "    # Check if the target is part of the columns\n",
+        "    if target in df.columns:\n",
+        "      X_df = df.drop(target, axis=1)\n",
+        "      y_true = df[target]\n",
+        "    else:\n",
+        "      X_df = df.copy()\n",
+        "      y_true = None\n",
+        "\n",
         "    predictions = model.predict(X_df)\n",
-        "    X_df[target] = df[target]\n",
+        "    X_df[target] = y_true\n",
         "    X_df[\"predictions\"] = predictions\n",
         "\n",
         "    # calculate the ratio prediction\n",
-        "    ratio_false_predictions = (X_df[\"is_genuine\"] != X_df[\"predictions\"]).sum() / len(X_df)\n",
-        "    print(f\"{ratio_false_predictions*100:.2f}% of false predictions\")\n",
+        "    if y_true is not None:\n",
+        "      ratio_false_predictions = (y_true != predictions).sum() / len(X_df)\n",
+        "      print(f\"{ratio_false_predictions*100:.2f}% of false predictions\")\n",
         "\n",
         "    print(X_df)\n",
         "    X_df.to_csv(f\"{root}data/new_csv.csv\", index=False)"
@@ -135,9 +150,9 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "DC4P-BH0lo3Q",
-        "outputId": "fafed025-89d7-4156-ac00-d60eed98b0e5"
+        "outputId": "d7280c93-054e-4dfe-c5f1-40091350c0a0"
       },
-      "execution_count": 21,
+      "execution_count": 35,
       "outputs": [
         {
           "output_type": "stream",
