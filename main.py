@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyMTqjqdjl8jojFGyHC9kUNi",
+      "authorship_tag": "ABX9TyMMVv0FsBRhylweqH2/L2T5",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -32,7 +32,7 @@
       "metadata": {
         "id": "ExY0xkOTi-7s"
       },
-      "execution_count": 16,
+      "execution_count": null,
       "outputs": []
     },
     {
@@ -47,9 +47,9 @@
         },
         "collapsed": true,
         "id": "gzDILzwhaAJG",
-        "outputId": "d39d4be7-cd8e-4d2d-a2fd-ababe60d839d"
+        "outputId": "476ae159-a0f8-4a72-e4f4-d7648371f00e"
       },
-      "execution_count": 17,
+      "execution_count": 1,
       "outputs": [
         {
           "output_type": "stream",
@@ -72,25 +72,75 @@
       "metadata": {
         "id": "gjyQCnWoUos5"
       },
-      "execution_count": 22,
+      "execution_count": 2,
       "outputs": []
     },
     {
       "cell_type": "code",
       "source": [
         "root = \"/content/drive/MyDrive/projet_faux_monnayage/\"\n",
-        "target = \"is_genuine\"\n",
-        "file = \"data/billets_df_cleaned.csv\""
+        "path_csv_file = \"data/billets_df_cleaned.csv\"\n",
+        "field_target = \"is_genuine\""
       ],
       "metadata": {
         "id": "-hNHTjeiaah5"
       },
-      "execution_count": 19,
+      "execution_count": 3,
       "outputs": []
     },
     {
       "cell_type": "code",
-      "execution_count": 34,
+      "source": [
+        "def set_target(column_target):\n",
+        "  return column_target"
+      ],
+      "metadata": {
+        "id": "3V3vKNVrxk68"
+      },
+      "execution_count": 4,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def set_csv_file(file):\n",
+        "  return file"
+      ],
+      "metadata": {
+        "id": "w2gY1ZPmxZaO"
+      },
+      "execution_count": 5,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def load_data(file_to_load):\n",
+        "  file = set_csv_file(file_to_load)\n",
+        "  df = pd.read_csv(file)\n",
+        "  return df"
+      ],
+      "metadata": {
+        "id": "WoMcB8Omz0pS"
+      },
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def save_data_csv(df, path):\n",
+        "  return df.to_csv(path, index=False)"
+      ],
+      "metadata": {
+        "id": "vK-rFHRA0cnC"
+      },
+      "execution_count": 15,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 18,
       "metadata": {
         "id": "urtzfU50JFDm"
       },
@@ -98,8 +148,11 @@
       "source": [
         "def main():\n",
         "\n",
+        "  file = set_csv_file(root + path_csv_file)\n",
+        "  target = set_target(field_target)\n",
+        "\n",
         "  # Dataframe given\n",
-        "  df = pd.read_csv(root + file)\n",
+        "  df = load_data(file)\n",
         "\n",
         "  model = joblib.load(f\"{root}model.pkl\")\n",
         "\n",
@@ -114,7 +167,7 @@
         "    clusters = model.predict(df)\n",
         "    df[\"clusters\"] = clusters\n",
         "    print(df)\n",
-        "    df.to_csv(f\"{root}data/new_csv.csv\", index=False)\n",
+        "    save_data_csv(df, root + \"data/output.csv\")\n",
         "\n",
         "  # Or supervised and then need to split the target from the dataset\n",
         "  else:\n",
@@ -136,7 +189,7 @@
         "      print(f\"{ratio_false_predictions*100:.2f}% of false predictions\")\n",
         "\n",
         "    print(X_df)\n",
-        "    X_df.to_csv(f\"{root}data/new_csv.csv\", index=False)"
+        "    save_data_csv(X_df, root + \"data/output.csv\")"
       ]
     },
     {
@@ -150,9 +203,9 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "DC4P-BH0lo3Q",
-        "outputId": "d7280c93-054e-4dfe-c5f1-40091350c0a0"
+        "outputId": "22ecea09-bd5a-4c94-9038-e56b2916e760"
       },
-      "execution_count": 35,
+      "execution_count": 19,
       "outputs": [
         {
           "output_type": "stream",
