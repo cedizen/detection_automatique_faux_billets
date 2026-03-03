@@ -7,25 +7,20 @@ Original file is located at
     https://colab.research.google.com/drive/1xsvTpFH-abLNAGNJjNDbur2FHzWkYtDL
 """
 
+# retrieve the model
 import joblib
+
+# retrieve args in the command line terminal
+import argparse
+from pathlib import Path
+
 import pandas as pd
 
 from sklearn.cluster import KMeans
 from sklearn.pipeline import Pipeline
 
-root = "/content/drive/MyDrive/projet_faux_monnayage/"
-path_csv_file = "data/billets_df_cleaned.csv"
-field_target = "is_genuine"
-
-def set_target(column_target):
-  return column_target
-
-def set_csv_file(file):
-  return file
-
 def load_data(file_to_load):
-  file = set_csv_file(file_to_load)
-  df = pd.read_csv(file)
+  df = pd.read_csv(file_to_load)
   return df
 
 def save_data_csv(df, path):
@@ -33,13 +28,18 @@ def save_data_csv(df, path):
 
 def main():
 
-  file = set_csv_file(root + path_csv_file)
-  target = set_target(field_target)
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--file", required=True, help="Path to CSV file")
+  parser.add_argument("--target", required=False, help="Target")
+
+  args = parser.parse_args()
+  csv_path_file = Path(args.file)
 
   # Dataframe given
-  df = load_data(file)
+  df = load_data(csv_path_file)
 
-  model = joblib.load(root + "models/model.pkl")
+  # retrive the model
+  model = joblib.load("model.pkl")
 
   # Check if the model is in the pipeline or not, and extract from it
   if isinstance(model, Pipeline):
@@ -52,12 +52,13 @@ def main():
     clusters = model.predict(df)
     df["clusters"] = clusters
     print(df)
-    save_data_csv(df, root + "data/output.csv")
+    save_data_csv(df, "predictions.csv")
 
   # Or supervised and then need to split the target from the dataset
   else:
     # Check if the target is part of the columns
-    if target in df.columns:
+    if args.target in df.columns:
+      target = args.target
       X_df = df.drop(target, axis=1)
       y_true = df[target]
     else:
@@ -73,8 +74,8 @@ def main():
       ratio_false_predictions = (y_true != predictions).sum() / len(X_df)
       print(f"{ratio_false_predictions*100:.2f}% of false predictions")
 
-    print(X_df)
-    save_data_csv(X_df, root + "data/output.csv")
+    print("Prédictions générées et stockées dans le fichier 'predictions.csv'")
+    save_data_csv(X_df, "predictions.csv")
 
 if __name__ == "__main__":
   main()
