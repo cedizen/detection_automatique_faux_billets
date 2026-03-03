@@ -66,10 +66,10 @@ def main():
     X_df["predictions"] = predictions
 
   # Attach again the id to the dataset after predictions
-  X_df["id"] = df["id"]
+  X_df[column_id] = df[column_id]
 
   # Reorder the id at the first position
-  new_order = ["id"] + [col for col in X_df.columns if col != "id"]
+  new_order = [column_id] + [col for col in X_df.columns if col != column_id]
   output_df = X_df[new_order]
 
   save_data_csv(output_df, "predictions.csv")
