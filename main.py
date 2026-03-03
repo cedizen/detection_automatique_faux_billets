@@ -30,7 +30,6 @@ def main():
 
   parser = argparse.ArgumentParser()
   parser.add_argument("--file", required=True, help="Path to CSV file")
-  parser.add_argument("--target", required=False, help="Target")
 
   args = parser.parse_args()
   csv_path_file = Path(args.file)
@@ -47,35 +46,35 @@ def main():
   else:
     final_estimator = model
 
+
+  # if there is a column id
+  column_id = "id"
+  if column_id in df.columns:
+    X_df = df.drop(column_id, axis=1)
+  else:
+    X_df = df.copy()
+
   # Check if the model is unsupervised like KMeans or others
   if isinstance(final_estimator, KMeans):
     clusters = model.predict(df)
-    df["clusters"] = clusters
-    print(df)
+    X_df["clusters"] = clusters
     save_data_csv(df, "predictions.csv")
 
-  # Or supervised and then need to split the target from the dataset
+  # Or supervised
   else:
-    # Check if the target is part of the columns
-    if args.target in df.columns:
-      target = args.target
-      X_df = df.drop(target, axis=1)
-      y_true = df[target]
-    else:
-      X_df = df.copy()
-      y_true = None
-
     predictions = model.predict(X_df)
-    X_df[target] = y_true
     X_df["predictions"] = predictions
 
-    # calculate the ratio prediction
-    if y_true is not None:
-      ratio_false_predictions = (y_true != predictions).sum() / len(X_df)
-      print(f"{ratio_false_predictions*100:.2f}% of false predictions")
+  # Attach again the id to the dataset after predictions
+  X_df["id"] = df["id"]
 
-    print("Prédictions générées et stockées dans le fichier 'predictions.csv'")
-    save_data_csv(X_df, "predictions.csv")
+  # Reorder the id at the first position
+  new_order = ["id"] + [col for col in X_df.columns if col != "id"]
+  output_df = X_df[new_order]
+
+  save_data_csv(output_df, "predictions.csv")
+  print("Prédictions générées et stockées dans le fichier 'predictions.csv'")
+  
 
 if __name__ == "__main__":
   main()
