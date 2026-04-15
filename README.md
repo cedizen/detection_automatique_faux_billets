@@ -67,7 +67,6 @@ La visualisation des clusters via les composantes principales (ACP1 et ACP2) a m
     '''bash
     pip install -r requirements.txt
     '''
-    *(Assurez-vous de créer un fichier `requirements.txt` avec toutes les bibliothèques utilisées, par exemple `pandas`, `scikit-learn`, `matplotlib`, `seaborn`, `joblib`)*.
 3.  **Lancer Jupyter/Colab** :
     '''bash
     jupyter notebook billets.ipynb
