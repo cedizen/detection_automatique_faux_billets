@@ -73,7 +73,7 @@ La visualisation des clusters via les composantes principales (ACP1 et ACP2) a m
     '''
     ou téléchargez le notebook sur Google Colab.
 4.  **Exécuter les cellules** : Exécutez toutes les cellules du notebook séquentiellement pour reproduire l'analyse et l'entraînement des modèles.
-5.  Exécuter le script 'main.py' en :
+5.  **Exécuter le script 'main.py'** en :
    ''' bash python main.py --file input.csv'''
 
 ## Fichiers Générés
