@@ -73,11 +73,14 @@ La visualisation des clusters via les composantes principales (ACP1 et ACP2) a m
     '''
     ou téléchargez le notebook sur Google Colab.
 4.  **Exécuter les cellules** : Exécutez toutes les cellules du notebook séquentiellement pour reproduire l'analyse et l'entraînement des modèles.
+5.  Exécuter le script 'main.py' en :
+   ''' bash python main.py --file input.csv'''
 
 ## Fichiers Générés
 
 - 'billets_df_cleaned.csv' : Version du jeu de données avec les valeurs manquantes de `margin_low` imputées par le modèle de régression linéaire, et une colonne `id` ajoutée.
 - 'model.pkl' : Le modèle supervisé le plus performant (KNeighborsClassifier) exporté au format `pickle`, prêt à être utilisé pour de nouvelles prédictions.
+- 'predictions.csv': dataset input avec un nouveau champs 'prédictions' ajouté
 
 ## Auteur
 
