@@ -1,10 +1,8 @@
+![Python](https://img.shields.io/badge/Python-blue?logo=python) ![Jupyter](https://img.shields.io/badge/Jupyter-orange?logo=jupyter) ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
+
 # Projet: Lutte contre la contrefaçon des billets de banque
 
 Ce projet utilise des techniques de machine learning pour détecter les faux billets de banque. Le notebook `billets.ipynb` explore un jeu de données de 1 500 billets, décrits par leurs caractéristiques physiques et leur nature (vrai/faux).
-
----
-![Python](https://img.shields.io/badge/Python-blue?logo=python) ![Jupyter](https://img.shields.io/badge/Jupyter-orange?logo=jupyter) ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
----
 
 ## Objectifs du Projet
 
